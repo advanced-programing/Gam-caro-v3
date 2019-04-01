@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.scene.text.Text;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.BorderPane;
@@ -25,16 +26,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.scene.effect.BlendMode;
-import javafx.util.Duration;
 
 /**
  *
@@ -42,14 +37,20 @@ import javafx.util.Duration;
  */
 public class CaroV4 extends Application {
     private boolean playable = true;
+    private GameState currentState = GameState.PLAYING;
     private Cell[][] board = new Cell[3][3];
     private Seed currentPlayer = Seed.X;
     private List<Combo> combos = new ArrayList<>();
+    
     @Override
     public void start(Stage primaryStage) {
+        Label status = new Label();
         Button newGame = new Button("New Game");
         Button quit = new Button("Quit");
-        Line line = new Line();
+        status.setStyle("-fx-font-size:14px;");
+        newGame.setStyle("-fx-font-size:14px;");
+        quit.setStyle("-fx-font-size:14px;");
+        
         Pane boardPane = new Pane();
         boardPane.setPrefSize(600, 600);
         for(int r=0; r<3; r++){
@@ -71,65 +72,83 @@ public class CaroV4 extends Application {
         boardPane.setOnMouseClicked(e->{
             int r = (int)e.getSceneX()/200;
             int c = (int)e.getSceneY()/200;
-            if(playable){
+            if(currentState == GameState.PLAYING){
                 if(currentPlayer == Seed.X && board[r][c].getIsChecked()==false)
                     board[r][c].drawX();
                 else if(currentPlayer == Seed.O && board[r][c].getIsChecked()==false)
                     board[r][c].drawO();
-                currentPlayer = (currentPlayer==Seed.X)?Seed.O:Seed.X;
                 board[r][c].setIsChecked(true);
-                checkState(line);
-                boardPane.getChildren().add(line);
+                if(checkState()){
+                    if(currentPlayer==Seed.X){
+                        currentState = GameState.X_WIN;
+                         status.setText("X won, game over!");
+                    }
+                    else{
+                        currentState = GameState.O_WIN;
+                         status.setText("O won, game over!");
+                    }
+                }
+                else if(checkDraw()){
+                    currentState = GameState.DRAW;
+                     status.setText("It's a draw, game over!");
+                }
+                else{
+                     status.setText("Playing...");
+                }
+                currentPlayer = (currentPlayer==Seed.X)?Seed.O:Seed.X;
             }
         });
         newGame.setOnAction(e ->{
-            //line.disableProperty();
+            status.setText("Playing...");
             initGame();
         });
         quit.setOnAction(e -> Platform.exit());
+        
         VBox vbButtons = new VBox();
         vbButtons.setSpacing(10);
         vbButtons.setPadding(new Insets(0, 20, 10, 20)); 
         vbButtons.getChildren().addAll(newGame, quit);
+        
         BorderPane root = new BorderPane();
         root.setCenter(boardPane);
         root.setRight(vbButtons);
+        root.setBottom(status);
+        
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
     public void initGame(){
-        for(int r=0; r<3; r++)
-            for(int c=0; c<3; c++)
+        for(int r=0; r<3; r++){
+            for(int c=0; c<3; c++){
                 board[r][c].drawEmpty();
-        playable = true;
-        currentPlayer = Seed.X;
-    }
-    public void checkState(Line line) {
-        for (Combo combo : combos) {
-            if (combo.isComplete()) {
-                playable = false;
-                playWinAnimation(line, combo);
-                break;
+                board[r][c].setIsChecked(false);
             }
         }
+        
+        //playable = true;
+        currentState = GameState.PLAYING;
+        currentPlayer = Seed.X;
+    }
+    public boolean checkState() {
+        for (Combo combo : combos) {
+            if (combo.isComplete()) {
+                return true;
+            }
+        }
+        return false;
     }
     
-    public void playWinAnimation(Line line, Combo combo){
-        //Line line = new Line();
-        line.setStartX(combo.cells[0].getX());
-        line.setStartY(combo.cells[0].getY());
-        line.setEndX(combo.cells[0].getX());
-        line.setEndY(combo.cells[0].getY());
-
-        //root.getChildren().add(line);
-
-        Timeline timeline = new Timeline();
-        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1),
-                new KeyValue(line.endXProperty(), combo.cells[2].getX()),
-                new KeyValue(line.endYProperty(), combo.cells[2].getY())));
-        timeline.play();
+    public boolean checkDraw(){
+        for(int r=0; r<3; r++){
+            for(int c=0; c<3; c++){
+                if(board[r][c].getIsChecked()==false)
+                    return false;
+            }
+        }
+        return true;
     }
+    
     /**
      * @param args the command line arguments
      */
