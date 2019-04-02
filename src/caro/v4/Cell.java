@@ -25,19 +25,29 @@ import javafx.geometry.Pos;
         private Text text;
         private Rectangle border;
         private boolean isChecked;
-        public Cell(){
-            border = new Rectangle(200, 200);
+        public Cell(double f){
+            border = new Rectangle(f, f);
             text = new Text();
             border.setFill(null);
             border.setStroke(Color.BLACK);
-            text.setFont(Font.font(72));
+            text.setFont(Font.font(40));
             isChecked = false;
             
             setAlignment(Pos.CENTER);
             getChildren().addAll(border, text);
         }
+        public void setFontText(Font f){
+            text.setFont(f);
+        }
+        public void setSizeBorder(double f){
+            border.setHeight(f);
+            border.setWidth(f);
+        }
         public String getText(){
             return text.getText();
+        }
+        public void setColorText(Color color){
+            text.setFill(color);
         }
         public double getX(){
             return this.getTranslateX()+100;
