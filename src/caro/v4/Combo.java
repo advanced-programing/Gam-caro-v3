@@ -16,7 +16,7 @@ public class Combo {
         }
 
         public boolean isComplete() {
-            if (cells[0].getText().isEmpty())
+            if (cells[0].getText().isEmpty()==true)
                 return false;
 
             return cells[0].getText().equals(cells[1].getText())

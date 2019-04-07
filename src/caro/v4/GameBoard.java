@@ -30,10 +30,13 @@ public class GameBoard {
     private static Cell[][] board = new Cell[ROWS][COLS];
     private static Seed currentPlayer = Seed.X;
     private static List<Combo> combos = new ArrayList<>();
-    private static Stage window = new Stage();
-    
+    static Stage window = new Stage();
+    public static void init(){
+       // window.close();
+        window.initModality(Modality.APPLICATION_MODAL);
+    }
     public static void display() {
-       // Stage window = new Stage();
+        Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Playing Caro game");
        
@@ -48,36 +51,7 @@ public class GameBoard {
         Pane boardPane = new Pane();
         boardPane.setPrefSize(600, 600);
         
-        for(int r=0; r<ROWS; r++){
-            for(int c=0; c<COLS; c++){
-                Cell cell = new Cell(600/ROWS);
-                cell.setTranslateX(r*(600/ROWS));
-                cell.setTranslateY(c*(600/COLS));
-                boardPane.getChildren().add(cell);
-                
-                board[r][c] = cell;
-            }
-        }
-        for(int r=0; r<ROWS; r++){
-            for(int c=0; c<=COLS-3; c++){
-                combos.add(new Combo(board[r][c], board[r][c+1], board[r][c+2]));
-            }
-        }
-        for(int c=0; c<COLS; c++){
-            for(int r=0; r<=ROWS-3; r++){
-                combos.add(new Combo(board[r][c], board[r+1][c], board[r+2][c]));
-            }
-        }
-        for(int r=0; r<=ROWS-3; r++){
-            for(int c=0; c<=COLS-3; c++){
-                combos.add(new Combo(board[r][c], board[r+1][c+1], board[r+2][c+2]));
-            }
-        }
-        for(int r=0; r<=ROWS-3; r++){
-            for(int c=2; c<COLS; c++){
-                combos.add(new Combo(board[r][c], board[r+1][c-1], board[r+2][c-2]));
-            }
-        }
+        initBoard(boardPane);
         
         newGame.setOnAction(e ->{
             status.setText("Playing...");

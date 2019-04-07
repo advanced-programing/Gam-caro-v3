@@ -21,6 +21,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.animation.PauseTransition;
+import javafx.scene.image.Image;
 
 /**
  *
@@ -38,6 +39,7 @@ public class CaroV4 extends Application {
     private int rowComMove=0;
     private int colComMove=0;
     private GameType gameType = GameType.HUMAN;
+    private Image menuImage = new Image("/image/pic10.jpg");
     //Stage window = new Stage();
      
     @Override
@@ -48,7 +50,9 @@ public class CaroV4 extends Application {
         Button chooseSize = new Button("Game size");
         Button chooseType = new Button("Game type");
                 
-        label.setStyle("-fx-font-size: 32pt; -fx-font-family: \"Segoe UI Light\";  -fx-text-fill: Green; -fx-opacity: 1;");
+        label.setFont( Font.font("Verdana", FontWeight.MEDIUM, 32));
+        label.setTextFill( Color.TOMATO);
+        
         start.setStyle("-fx-font-size:14px;");
         start.setPrefWidth(100);
         quit.setStyle("-fx-font-size:14px;");
@@ -73,7 +77,7 @@ public class CaroV4 extends Application {
             window.initModality(Modality.APPLICATION_MODAL);
             window.setTitle("Playing Caro game");
        
-            Label status = new Label("Playing...");
+            Label status = new Label("Player " + currentPlayer + " go...");
             Button newGame = new Button("New Game");
             Button quitBoard = new Button("Quit");
                 
@@ -89,7 +93,7 @@ public class CaroV4 extends Application {
             initCombo();
             
             newGame.setOnAction(event ->{
-                status.setText("Playing...");
+                status.setText("Player " + currentPlayer + " go...");
                 initGame();
             });
             System.out.println("Rows: "+ROWS+" Cols: "+COLS+"\n");
@@ -108,11 +112,11 @@ public class CaroV4 extends Application {
                         if(checkState()){
                             if(currentPlayer==Seed.X){
                                 currentState = GameState.X_WIN;
-                                status.setText("X won, game over!");
+                                status.setText("Player X won, game over!");
                             }
                             else{
                                 currentState = GameState.O_WIN;
-                                status.setText("O won, game over!");
+                                status.setText("Player O won, game over!");
                             }   
                         }
                         else if(checkDraw()){
@@ -120,9 +124,9 @@ public class CaroV4 extends Application {
                             status.setText("It's a draw, game over!");
                         }
                         else{
-                            status.setText("Playing...");
+                            currentPlayer = (currentPlayer==Seed.X)?Seed.O:Seed.X;
+                            status.setText("Player " + currentPlayer + " go...");
                         }
-                        currentPlayer = (currentPlayer==Seed.X)?Seed.O:Seed.X;
                         System.out.println(currentState + "");
                     }
                 }
@@ -186,12 +190,19 @@ public class CaroV4 extends Application {
         
         VBox buttonBar = new VBox();
         buttonBar.setSpacing(10);
-        buttonBar.setPadding(new Insets(20, 20, 20, 220)); 
+        buttonBar.setPadding(new Insets(20, 20, 20, 200)); 
         buttonBar.getChildren().addAll(chooseSize, chooseType, start, quit);
 
         BorderPane root = new BorderPane();
         root.setCenter(buttonBar);
         root.setTop(label);
+       
+        BackgroundSize backgroundSize = new BackgroundSize(500, 500, true, true, true, false);
+        // new BackgroundImage(image, repeatX, repeatY, position, size)
+        BackgroundImage backgroundImage = new BackgroundImage(menuImage, BackgroundRepeat.ROUND, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        // new Background(images...)
+        Background background = new Background(backgroundImage);
+        root.setBackground(background);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -270,7 +281,7 @@ public class CaroV4 extends Application {
     }
    
     public void closeWindow(Stage window){
-        Boolean answer = ConfirmBox.display("Confirm Box", "Are you sure want to exit");
+        Boolean answer = ConfirmBox.display("Confirm Box", "Are you sure want to exit?");
         if(answer){
             initGame();
             window.close();

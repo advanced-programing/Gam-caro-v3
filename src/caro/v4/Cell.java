@@ -22,6 +22,7 @@ import javafx.geometry.Pos;
  * @author USER
  */
  public class Cell extends StackPane{
+        private Seed content;
         private Text text;
         private Rectangle border;
         private boolean isChecked;
@@ -36,39 +37,33 @@ import javafx.geometry.Pos;
             setAlignment(Pos.CENTER);
             getChildren().addAll(border, text);
         }
-        public void setFontText(Font f){
-            text.setFont(f);
-        }
-        public void setSizeBorder(double f){
-            border.setHeight(f);
-            border.setWidth(f);
-        }
+       
         public String getText(){
             return text.getText();
         }
         public void setColorText(Color color){
             text.setFill(color);
         }
-        public double getX(){
-            return this.getTranslateX()+100;
-        }
-        public double getY(){
-            return this.getTranslateY()+100;
-        }
         public void drawX(){
             text.setText("X");
+            content = Seed.X;
         }
         public void drawO(){
             text.setText("O");
+            content = Seed.O;
         }
         public void drawEmpty(){
             text.setText(null);
+            content = Seed.EMPTY;
         }
         public void setIsChecked(boolean val){
             isChecked = val;
         }
         public boolean getIsChecked(){
             return isChecked;
+        }
+        public Seed getContent(){
+            return content;
         }
     }
 

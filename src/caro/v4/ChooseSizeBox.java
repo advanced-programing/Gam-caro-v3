@@ -10,6 +10,9 @@ import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.geometry.*;
+import javafx.scene.text.*;
+import javafx.scene.paint.Color;
+
 
 /**
  *
@@ -27,8 +30,10 @@ public class ChooseSizeBox {
         Button buttonSize2 = new Button("6x6");
         Button buttonSize3 = new Button("10x10");
         
-        message.setStyle("-fx-font-size: 20pt; -fx-font-family: \"Segoe UI Light\";  -fx-text-fill: Red; -fx-opacity: 1;");
-        buttonSize1.setStyle("-fx-font-size:14px; -");
+        message.setFont( Font.font("Verdana", FontWeight.NORMAL, 25));
+        message.setTextFill( Color.BLUE);
+        
+        buttonSize1.setStyle("-fx-font-size:14px;");
         buttonSize1.setPrefWidth(100);
         buttonSize2.setStyle("-fx-font-size:14px;");
         buttonSize2.setPrefWidth(100);
