@@ -40,6 +40,9 @@ public class CaroV4 extends Application {
     private int colComMove=0;
     private GameType gameType = GameType.HUMAN;
     private Image menuImage = new Image("/image/pic10.jpg");
+    private Image boardImage = new Image("/image/pic2.jpg");
+    private String userName1;
+    private String userName2;
     //Stage window = new Stage();
      
     @Override
@@ -73,15 +76,19 @@ public class CaroV4 extends Application {
         quit.setOnAction(e -> Platform.exit());
         
         start.setOnAction(e -> {
+            UserInforBox.display();
+            userName1 = UserInforBox.name1;
+            userName2 = UserInforBox.name2;
+            
             Stage window = new Stage();
             window.initModality(Modality.APPLICATION_MODAL);
-            window.setTitle("Playing Caro game");
        
-            Label status = new Label("Player " + currentPlayer + " go...");
+            Label status = new Label("Player " + userName1 + " go...");
             Button newGame = new Button("New Game");
             Button quitBoard = new Button("Quit");
                 
-            status.setStyle("-fx-font-size:20px; -fx-text-fill: Green;");
+            status.setFont( Font.font("Verdana", FontWeight.MEDIUM, 25));
+            status.setTextFill( Color.DODGERBLUE);
             newGame.setStyle("-fx-font-size:14px;");
             quitBoard.setStyle("-fx-font-size:14px;");
         
@@ -93,7 +100,7 @@ public class CaroV4 extends Application {
             initCombo();
             
             newGame.setOnAction(event ->{
-                status.setText("Player " + currentPlayer + " go...");
+                status.setText("Player " + userName1 + " go...");
                 initGame();
             });
             System.out.println("Rows: "+ROWS+" Cols: "+COLS+"\n");
@@ -112,11 +119,11 @@ public class CaroV4 extends Application {
                         if(checkState()){
                             if(currentPlayer==Seed.X){
                                 currentState = GameState.X_WIN;
-                                status.setText("Player X won, game over!");
+                                status.setText("Player "+ userName1 +" won, game over!");
                             }
                             else{
                                 currentState = GameState.O_WIN;
-                                status.setText("Player O won, game over!");
+                                status.setText("Player "+ userName2 +" won, game over!");
                             }   
                         }
                         else if(checkDraw()){
@@ -125,7 +132,10 @@ public class CaroV4 extends Application {
                         }
                         else{
                             currentPlayer = (currentPlayer==Seed.X)?Seed.O:Seed.X;
-                            status.setText("Player " + currentPlayer + " go...");
+                            if(currentPlayer==Seed.X)
+                                status.setText("Player " + userName1 + " go...");
+                            else
+                                status.setText("Player " + userName2 + " go...");
                         }
                         System.out.println(currentState + "");
                     }
@@ -182,9 +192,13 @@ public class CaroV4 extends Application {
             rootBoard.setRight(vbButtons);
             rootBoard.setBottom(status);
             status.setPadding(new Insets(10, 10, 20, 0));
-        
+            BackgroundSize bgSize = new BackgroundSize(500, 500, true, true, true, false);
+            Background bgBoard = new Background(new BackgroundImage(boardImage, BackgroundRepeat.ROUND, BackgroundRepeat.ROUND, BackgroundPosition.CENTER, bgSize));
+            rootBoard.setBackground(bgBoard);
+            
             Scene sceneBoard = new Scene(rootBoard);
             window.setScene(sceneBoard);
+            window.setTitle("Playing game");
             window.showAndWait();
         });
         
@@ -205,6 +219,7 @@ public class CaroV4 extends Application {
         root.setBackground(background);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Main Game Menu");
         primaryStage.show();
     }
     
@@ -281,7 +296,7 @@ public class CaroV4 extends Application {
     }
    
     public void closeWindow(Stage window){
-        Boolean answer = ConfirmBox.display("Confirm Box", "Are you sure want to exit?");
+        Boolean answer = ConfirmBox.display();
         if(answer){
             initGame();
             window.close();

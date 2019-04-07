@@ -32,7 +32,7 @@ public class ChooseTypeGameBox {
         Button typeHuman = new Button("Play with another player");
         Button typeCom = new Button("Play with computer");
         
-        message.setFont( Font.font("Verdana", FontWeight.NORMAL, 25));
+        message.setFont( Font.font("Arial", FontWeight.LIGHT, 25));
         message.setTextFill( Color.BLUE);
         typeHuman.setStyle("-fx-font-size:14px;");
         typeHuman.setPrefWidth(200);
@@ -49,7 +49,11 @@ public class ChooseTypeGameBox {
             Stage window2 = new Stage();
             window2.initModality(Modality.APPLICATION_MODAL);
             window2.setTitle("Choose level ");
+            Label label = new Label(" What is the difficulty of the computer? ");
             Button button = new Button("Apply");
+            
+            label.setFont( Font.font("Arial", FontWeight.LIGHT, 15));
+            button.setStyle("-fx-font-size:14px;");
             
             ListView<String> listView = new ListView<>();
             listView.getItems().addAll("Level 1", "Level 2", "Level 3");
@@ -64,11 +68,12 @@ public class ChooseTypeGameBox {
                 else if(type.get(0).equals("Level 3"))
                     gameType = GameType.COMLEVEL3;
                 System.out.println(gameType + "");  
+                window2.close();
             });
             
-            VBox layout = new VBox(10);
+            VBox layout = new VBox();
             layout.setPadding(new Insets(20, 20, 20, 20));
-            layout.getChildren().addAll(listView, button);
+            layout.getChildren().addAll(label, listView, button);
 
             Scene scene2 = new Scene(layout, 300, 200);
             window2.setScene(scene2);
@@ -86,6 +91,7 @@ public class ChooseTypeGameBox {
        
         Scene scene = new Scene(root);
         window.setScene(scene);
+        window.setTitle("Choose Game Type Box");
         window.showAndWait();
         return gameType;
     }

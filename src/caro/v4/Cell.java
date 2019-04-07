@@ -32,6 +32,7 @@ import javafx.geometry.Pos;
             border.setFill(null);
             border.setStroke(Color.BLACK);
             text.setFont(Font.font(40));
+            text.setFill(Color.BLACK);
             isChecked = false;
             
             setAlignment(Pos.CENTER);

@@ -57,7 +57,7 @@ public class ChooseSizeBox {
         
         VBox buttonBar = new VBox();
         buttonBar.setSpacing(10);
-        buttonBar.setPadding(new Insets(20, 20, 20, 120)); 
+        buttonBar.setPadding(new Insets(20, 20, 20, 150)); 
         buttonBar.getChildren().addAll(buttonSize1, buttonSize2, buttonSize3);
         
         BorderPane root = new BorderPane();
@@ -66,6 +66,7 @@ public class ChooseSizeBox {
         
         Scene scene = new Scene(root);
         window.setScene(scene);
+        window.setTitle("Choose Size Box");
         window.showAndWait();
         return size;
     }

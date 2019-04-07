@@ -10,24 +10,28 @@ import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.geometry.*;
+import javafx.scene.text.*;
 
 public class ConfirmBox {
 
     //Create variable
     static boolean answer;
 
-    public static boolean display(String title, String message) {
+    public static boolean display() {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle(title);
         window.setMinWidth(250);
-        Label label = new Label();
-        label.setText(message);
-
+        Label label = new Label(" Are you sure want to quit? ");
+        
         //Create two buttons
         Button yesButton = new Button("Yes");
         Button noButton = new Button("No");
 
+        label.setFont( Font.font("Arial", FontWeight.LIGHT, 15));
+        yesButton.setStyle("-fx-font-size:14px;");
+        yesButton.setPrefWidth(50);
+        noButton.setStyle("-fx-font-size:14px;");
+        noButton.setPrefWidth(50);
         //Clicking will set answer and close window
         yesButton.setOnAction(e -> {
             answer = true;
@@ -46,6 +50,7 @@ public class ConfirmBox {
         layout.setPadding(new Insets(20, 20, 20, 20)); 
         Scene scene = new Scene(layout);
         window.setScene(scene);
+        window.setTitle("Confirm Box");
         window.showAndWait();
 
         //Make sure to return answer
