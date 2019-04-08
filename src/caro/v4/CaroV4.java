@@ -33,8 +33,6 @@ public class CaroV4 extends Application {
     private GameState currentState = GameState.PLAYING;
     private Cell[][] board = new Cell[ROWS][COLS];
     private Seed currentPlayer = Seed.X;
-    private Seed playerSeed = Seed.X;
-    private Seed comSeed = Seed.O;
     private List<Combo> combos = new ArrayList<>();
     private int rowComMove=0;
     private int colComMove=0;
@@ -43,7 +41,6 @@ public class CaroV4 extends Application {
     private Image boardImage = new Image("/image/pic2.jpg");
     private String userName1;
     private String userName2;
-    //Stage window = new Stage();
      
     @Override
     public void start(Stage primaryStage) {
@@ -76,16 +73,22 @@ public class CaroV4 extends Application {
         quit.setOnAction(e -> Platform.exit());
         
         start.setOnAction(e -> {
-            UserInforBox.display();
-            userName1 = UserInforBox.name1;
-            userName2 = UserInforBox.name2;
-            
             Stage window = new Stage();
             window.initModality(Modality.APPLICATION_MODAL);
        
-            Label status = new Label("Player " + userName1 + " go...");
+            Label status = new Label();
             Button newGame = new Button("New Game");
             Button quitBoard = new Button("Quit");
+            
+            if(gameType==GameType.HUMAN){
+                UserInforBox.display();
+                userName1 = UserInforBox.name1;
+                userName2 = UserInforBox.name2;
+                status.setText("Player "+userName1+" go...");
+            }
+            else{
+                status.setText("You go...");
+            }
                 
             status.setFont( Font.font("Verdana", FontWeight.MEDIUM, 25));
             status.setTextFill( Color.DODGERBLUE);
@@ -100,8 +103,11 @@ public class CaroV4 extends Application {
             initCombo();
             
             newGame.setOnAction(event ->{
-                status.setText("Player " + userName1 + " go...");
                 initGame();
+                if(gameType==GameType.HUMAN)
+                    status.setText("Player "+userName1+" go...");
+                else
+                    status.setText("You go...");
             });
             System.out.println("Rows: "+ROWS+" Cols: "+COLS+"\n");
             
@@ -142,40 +148,40 @@ public class CaroV4 extends Application {
                 }
                 else if(gameType == GameType.COMLEVEL1){
                     if(currentState == GameState.PLAYING){
-                        status.setText("Computer move...");
+                        status.setText("Computer go...");
                         if(board[r][c].getIsChecked() == false){
                             board[r][c].drawX();
                             board[r][c].setIsChecked(true);
                         
-                        if(checkState()){
+                            if(checkState()){
                                 currentState = GameState.X_WIN;
                                 status.setText("You won, game over!");   
-                        }
-                        else if(checkDraw()){
-                            currentState = GameState.DRAW;
-                            status.setText("It's a draw, game over!");
-                        }
-                        else{
-                            PauseTransition delay = new PauseTransition(Duration.seconds(2));
-                            delay.setOnFinished(eventDraw ->{
-                                status.setText("You move...");
-                                tableLookupComMove(r, c);
-                                board[rowComMove][colComMove].drawO();
-                                board[rowComMove][colComMove].setIsChecked(true);
+                            }
+                            else if(checkDraw()){
+                                currentState = GameState.DRAW;
+                                status.setText("It's a draw, game over!");
+                            }
+                            else{
+                                PauseTransition delay = new PauseTransition(Duration.seconds(2));
+                                delay.setOnFinished(eventDraw ->{
+                                    status.setText("You go...");
+                                    tableLookupComMove(r, c);
+                                    board[rowComMove][colComMove].drawO();
+                                    board[rowComMove][colComMove].setIsChecked(true);
                                 
-                                if(checkState()){
-                                    currentState = GameState.O_WIN;
-                                    status.setText("Computer won, game over!");   
-                                }
-                                else if(checkDraw()){
-                                    currentState = GameState.DRAW;
-                                    status.setText("It's a draw, game over!");
-                                }
-                            });
-                            delay.play();
+                                    if(checkState()){
+                                        currentState = GameState.O_WIN;
+                                        status.setText("Computer won, game over!");   
+                                    }
+                                    else if(checkDraw()){
+                                        currentState = GameState.DRAW;
+                                        status.setText("It's a draw, game over!");
+                                    }
+                                });
+                                delay.play();
+                            }
                         }
                     }
-                }
                 }
                 
             });
@@ -210,7 +216,8 @@ public class CaroV4 extends Application {
         BorderPane root = new BorderPane();
         root.setCenter(buttonBar);
         root.setTop(label);
-       
+        
+        // new BackgroundSize
         BackgroundSize backgroundSize = new BackgroundSize(500, 500, true, true, true, false);
         // new BackgroundImage(image, repeatX, repeatY, position, size)
         BackgroundImage backgroundImage = new BackgroundImage(menuImage, BackgroundRepeat.ROUND, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, backgroundSize);
@@ -236,7 +243,7 @@ public class CaroV4 extends Application {
                 board[r][c].setIsChecked(false);
             }
         }
-        printCombo();
+        //printCombo();
         //playable = true;
         currentState = GameState.PLAYING;
         currentPlayer = Seed.X;
@@ -276,7 +283,7 @@ public class CaroV4 extends Application {
                 combos.add(new Combo(board[r][c], board[r+1][c-1], board[r+2][c-2]));
             }
         }
-        printCombo();
+        //printCombo();
     }
     public void printCombo(){
         for(Combo combo : combos)
@@ -288,7 +295,6 @@ public class CaroV4 extends Application {
                 combo.cells[0].setColorText(Color.RED);
                 combo.cells[1].setColorText(Color.RED);
                 combo.cells[2].setColorText(Color.RED);
-                System.out.println("Combo: "+combo.cells[0].getText()+" , "+combo.cells[0].getText()+" , "+combo.cells[0].getText());
                 return true;
             }
         }
@@ -302,6 +308,7 @@ public class CaroV4 extends Application {
             window.close();
         }
     }
+    
     public boolean checkDraw(){
         for(int r=0; r<ROWS; r++){
             for(int c=0; c<COLS; c++){

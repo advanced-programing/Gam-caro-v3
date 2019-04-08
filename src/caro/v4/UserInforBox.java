@@ -32,7 +32,7 @@ public class UserInforBox {
         
         button.setStyle("-fx-font-size:14px;");
         button.setOnAction( e -> {
-            if(isValid(nameInput1)&&isValid(nameInput2)){
+            if(isValid(nameInput1) && isValid(nameInput2)){
                 name1 = nameInput1.getText();
                 name2 = nameInput2.getText();
                 window.close();
@@ -51,14 +51,12 @@ public class UserInforBox {
     }
     
     private static boolean isValid(TextField name){
-        try{
-            if(name.getText().isEmpty()==false)
-                System.out.println("Player's name: " + name.getText());
+        if(name.getText().isEmpty()==false){
+            System.out.println("Player's name: " + name.getText());
             return true;
-        }catch(NumberFormatException e){
-            System.out.println("Player's name can not empty");
-            return false;
         }
+        System.out.println("Player's name can not be empty");
+        return false;
     }
 }
     
